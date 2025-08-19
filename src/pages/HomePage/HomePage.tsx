@@ -1,10 +1,10 @@
-import Place from '../place/place';
+import Place from '../Place/Place.tsx';
 
 type MainProps = {
   numberOfRentalOffers: number;
 };
 
-function Main({ numberOfRentalOffers }: MainProps): JSX.Element {
+function HomePage({ numberOfRentalOffers }: MainProps): JSX.Element {
   return (
     <main className="page__main page__main--index">
       <h1 className="visually-hidden">Cities</h1>
@@ -94,4 +94,4 @@ function Main({ numberOfRentalOffers }: MainProps): JSX.Element {
   );
 }
 
-export default Main;
+export default HomePage;

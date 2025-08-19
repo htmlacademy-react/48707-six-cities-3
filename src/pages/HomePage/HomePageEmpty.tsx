@@ -1,4 +1,4 @@
-function mainEmpty(): JSX.Element {
+function HomePageEmpty(): JSX.Element {
   return (
     <div className="cities">
       <div className="cities__places-container cities__places-container--empty container">
@@ -17,4 +17,4 @@ function mainEmpty(): JSX.Element {
   );
 }
 
-export default mainEmpty;
+export default HomePageEmpty;
