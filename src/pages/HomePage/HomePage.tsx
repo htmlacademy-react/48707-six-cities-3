@@ -1,4 +1,4 @@
-import Place from "../Place/Place";
+import Place from '../Place/Place';
 
 type MainProps = {
   numberOfRentalOffers: number;
