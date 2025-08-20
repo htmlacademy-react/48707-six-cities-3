@@ -1,4 +1,4 @@
-import Place from '../Place/Place.tsx';
+import Place from "../Place/Place";
 
 type MainProps = {
   numberOfRentalOffers: number;
