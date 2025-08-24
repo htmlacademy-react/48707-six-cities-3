@@ -2,9 +2,9 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AppRoute, AuthorizationStatus } from '../../const.tsx';
 import PrivateRoute from '../PrivateRoute/PrivateRoute.tsx';
 import Main from '../../pages/HomePage/HomePage.tsx';
-import Login from '../../pages/login/login.tsx';
-import Favorites from '../../pages/Favorites/favorites.tsx';
-import Offer from '../../pages/Offer/offer.tsx';
+import Login from '../../pages/Login/Login.tsx';
+import Favorites from '../../pages/Favorites/Favorites.tsx';
+import Offer from '../../pages/Offer/Offer.tsx';
 import NotFound from '../../pages/NotFound/NotFound.tsx';
 
 type AppScreenProps = {
