@@ -1,6 +1,7 @@
 import { TypeOffer } from '../../types/offer';
 import { useParams } from 'react-router-dom';
 import ReviewForm from './ReviewsForm';
+import { Navigate } from 'react-router-dom';
 
 type OfferProps = {
   offers: TypeOffer[];
@@ -12,6 +13,9 @@ export const getMonthName = (dateString: string): string =>
 function Offer({ offers }: OfferProps): JSX.Element {
   const { id } = useParams<{ id: string }>();
   const offer = offers.find((o) => o.id === id);
+  if (!offer) {
+    return <Navigate to="*" replace />;
+  }
   return (
     <main className="page__main page__main--offer">
       <section className="offer">
