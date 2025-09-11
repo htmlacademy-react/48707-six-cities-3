@@ -1,7 +1,7 @@
+import { useParams, Navigate } from 'react-router-dom';
+import { useState } from 'react';
 import { TypeOffer } from '../../types/offer';
-import { useParams } from 'react-router-dom';
 import ReviewForm from './ReviewsForm';
-import { Navigate } from 'react-router-dom';
 
 type OfferProps = {
   offers: TypeOffer[];
@@ -11,11 +11,16 @@ export const getMonthName = (dateString: string): string =>
   new Date(dateString).toLocaleString('en-US', { month: 'long' });
 
 function Offer({ offers }: OfferProps): JSX.Element {
+   const [review, setReview] = useState({
+      rating: 0,
+      comment: '',
+    });
   const { id } = useParams<{ id: string }>();
   const offer = offers.find((o) => o.id === id);
   if (!offer) {
     return <Navigate to="*" replace />;
   }
+
   return (
     <main className="page__main page__main--offer">
       <section className="offer">
@@ -160,9 +165,8 @@ function Offer({ offers }: OfferProps): JSX.Element {
                 }
               </ul>
               <ReviewForm
-                onReview={() => {
-                  throw new Error('Function "onAnswer" isn\'t implemented.');
-                }}
+                onReview={setReview}
+                review={review}
               />
             </section>
           </div>

@@ -20,7 +20,7 @@ function ListFavoriteGroups({
         </div>
       </div>
       <div className="favorites__places">
-        {offers.map((offer) => (
+        {offers?.map((offer) => (
           <FavoriteOffer key={offer.id} offer={offer} />
         ))}
       </div>

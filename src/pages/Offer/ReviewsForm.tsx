@@ -7,15 +7,13 @@ type ReviewFormState = {
 
 type ReviewProps = {
   onReview: ({ rating, comment }: ReviewFormState) => void;
+  review: ReviewFormState;
 };
 
 function ReviewsForm(props: ReviewProps): JSX.Element {
-  const { onReview } = props;
-  const [review, setReview] = useState<ReviewFormState>({
-    rating: 0,
-    comment: '',
-  });
-
+  const { onReview, review } = props;
+  const [reviewItems, setReviewItems] = useState<ReviewFormState>(review);
+  const isSubmitDisabled = reviewItems.comment === '' || reviewItems.rating === 0;
   return (
     <form
       className="reviews__form form"
@@ -23,7 +21,7 @@ function ReviewsForm(props: ReviewProps): JSX.Element {
       method="post"
       onSubmit={(evt: FormEvent<HTMLFormElement>) => {
         evt.preventDefault();
-        onReview(review);
+        onReview(reviewItems);
       }}
     >
       <label className="reviews__label form__label" htmlFor="review">
@@ -38,7 +36,7 @@ function ReviewsForm(props: ReviewProps): JSX.Element {
           type="radio"
           onChange={({ target }: ChangeEvent<HTMLInputElement>) => {
             const value = Number(target.value);
-            setReview({ ...review, rating: value });
+            setReviewItems({ ...reviewItems, rating: value });
           }}
         />
         <label
@@ -59,7 +57,7 @@ function ReviewsForm(props: ReviewProps): JSX.Element {
           type="radio"
           onChange={({ target }: ChangeEvent<HTMLInputElement>) => {
             const value = Number(target.value);
-            setReview({ ...review, rating: value });
+            setReviewItems({ ...reviewItems, rating: value });
           }}
         />
         <label
@@ -80,7 +78,7 @@ function ReviewsForm(props: ReviewProps): JSX.Element {
           type="radio"
           onChange={({ target }: ChangeEvent<HTMLInputElement>) => {
             const value = Number(target.value);
-            setReview({ ...review, rating: value });
+            setReviewItems({ ...reviewItems, rating: value });
           }}
         />
         <label
@@ -101,7 +99,7 @@ function ReviewsForm(props: ReviewProps): JSX.Element {
           type="radio"
           onChange={({ target }: ChangeEvent<HTMLInputElement>) => {
             const value = Number(target.value);
-            setReview({ ...review, rating: value });
+            setReviewItems({ ...reviewItems, rating: value });
           }}
         />
         <label
@@ -122,7 +120,7 @@ function ReviewsForm(props: ReviewProps): JSX.Element {
           type="radio"
           onChange={({ target }: ChangeEvent<HTMLInputElement>) => {
             const value = Number(target.value);
-            setReview({ ...review, rating: value });
+            setReviewItems({ ...reviewItems, rating: value });
           }}
         />
         <label
@@ -142,7 +140,7 @@ function ReviewsForm(props: ReviewProps): JSX.Element {
         placeholder="Tell how was your stay, what you like and what can be improved"
         onChange={({ target }: ChangeEvent<HTMLTextAreaElement>) => {
           const value = target.value;
-          setReview({ ...review, comment: value });
+          setReviewItems({ ...reviewItems, comment: value });
         }}
       >
       </textarea>
@@ -155,7 +153,7 @@ function ReviewsForm(props: ReviewProps): JSX.Element {
         <button
           className="reviews__submit form__submit button"
           type="submit"
-          disabled
+          disabled={isSubmitDisabled}
         >
           Submit
         </button>

@@ -7,12 +7,10 @@ type FavoriteOfferProps = {
 function FavoriteOffer({ offer }: FavoriteOfferProps): JSX.Element {
   return (
     <article className="favorites__card place-card">
-      {offer.isPremium ? (
+      {offer.isPremium && (
         <div className="place-card__mark">
           <span>Premium</span>
         </div>
-      ) : (
-        ''
       )}
       <div className="favorites__image-wrapper place-card__image-wrapper">
         <a href="#">
