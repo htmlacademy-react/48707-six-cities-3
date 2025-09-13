@@ -1,10 +1,12 @@
-import Place from '../Place/Place';
+import { TypeOffer } from '../../types/offer';
+import ListOffers from '../ListOffers/ListOffers';
 
 type MainProps = {
   numberOfRentalOffers: number;
+  offers: TypeOffer[];
 };
 
-function HomePage({ numberOfRentalOffers }: MainProps): JSX.Element {
+function HomePage({ numberOfRentalOffers, offers }: MainProps): JSX.Element {
   return (
     <main className="page__main page__main--index">
       <h1 className="visually-hidden">Cities</h1>
@@ -77,13 +79,7 @@ function HomePage({ numberOfRentalOffers }: MainProps): JSX.Element {
                 </li>
               </ul>
             </form>
-            <div className="cities__places-list places__list tabs__content">
-              <Place />
-              <Place />
-              <Place />
-              <Place />
-              <Place />
-            </div>
+            <ListOffers offers={offers} />
           </section>
           <div className="cities__right-section">
             <section className="cities__map map"></section>

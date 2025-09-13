@@ -6,18 +6,24 @@ import Login from '../../pages/Login/Login.tsx';
 import Favorites from '../../pages/Favorites/Favorites.tsx';
 import Offer from '../../pages/Offer/Offer.tsx';
 import NotFound from '../../pages/NotFound/NotFound.tsx';
+import { TypeOffer } from '../../types/offer.ts';
 
 type AppScreenProps = {
   numberOfRentalOffers: number;
+  offers: TypeOffer[];
 };
 
-function App({ numberOfRentalOffers }: AppScreenProps): JSX.Element {
+function App({ numberOfRentalOffers, offers }: AppScreenProps): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path={AppRoute.Root}
-          element={<Main numberOfRentalOffers={numberOfRentalOffers} />}
+          element={<Main numberOfRentalOffers={numberOfRentalOffers} offers = {offers}/>}
+        />
+        <Route
+          path={AppRoute.Offer}
+          element={<Offer offers={offers}/>}
         />
 
         <Route path={AppRoute.Login} element={<Login />} />
@@ -25,11 +31,10 @@ function App({ numberOfRentalOffers }: AppScreenProps): JSX.Element {
           path={AppRoute.Favorites}
           element={
             <PrivateRoute authorizationStatus={AuthorizationStatus.NoAuth}>
-              <Favorites />
+              <Favorites offers={offers} />
             </PrivateRoute>
           }
         />
-        <Route path={AppRoute.Offer} element={<Offer />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
