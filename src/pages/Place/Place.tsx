@@ -5,12 +5,14 @@ type PlaceProps = {
   offer: TypeOffer;
   onMouseOver: () => void;
   active: boolean;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
 };
 
-function Place({offer, onMouseOver, active }: PlaceProps): JSX.Element {
+function Place({offer, onMouseOver, active, onMouseEnter, onMouseLeave }: PlaceProps): JSX.Element {
   const activeStyle = active ? '1px solid #ececec' : '';
   return (
-    <article className="cities__card place-card" onMouseOver={onMouseOver} style={{ border: activeStyle }}>
+    <article className="cities__card place-card" onMouseOver={onMouseOver} style={{ border: activeStyle }} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
       {
         offer.isPremium ?
           <div className="place-card__mark">

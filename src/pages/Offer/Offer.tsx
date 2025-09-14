@@ -7,7 +7,7 @@ type OfferProps = {
   offers: TypeOffer[];
 };
 
-export const getMonthName = (dateString: string): string =>
+const getMonthName = (dateString: string): string =>
   new Date(dateString).toLocaleString('en-US', { month: 'long' });
 
 function Offer({ offers }: OfferProps): JSX.Element {

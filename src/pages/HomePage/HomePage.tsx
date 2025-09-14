@@ -1,12 +1,22 @@
 import { TypeOffer } from '../../types/offer';
 import ListOffers from '../ListOffers/ListOffers';
+import Map from '../../components/Map/Map';
 
 type MainProps = {
   numberOfRentalOffers: number;
   offers: TypeOffer[];
+  city: TypeOffer['city'];
+  selectedPoint: TypeOffer['location'] | undefined;
+  onListItemHover: (listItemName: string) => void;
 };
 
-function HomePage({ numberOfRentalOffers, offers }: MainProps): JSX.Element {
+function HomePage({
+  numberOfRentalOffers,
+  offers,
+  city,
+  selectedPoint,
+  onListItemHover,
+}: MainProps): JSX.Element {
   return (
     <main className="page__main page__main--index">
       <h1 className="visually-hidden">Cities</h1>
@@ -51,7 +61,7 @@ function HomePage({ numberOfRentalOffers, offers }: MainProps): JSX.Element {
           <section className="cities__places places">
             <h2 className="visually-hidden">Places</h2>
             <b className="places__found">
-              {numberOfRentalOffers} places to stay in Amsterdam
+              {numberOfRentalOffers} places to stay in {city.name}
             </b>
             <form className="places__sorting" action="#" method="get">
               <span className="places__sorting-caption">Sort by</span>
@@ -79,10 +89,16 @@ function HomePage({ numberOfRentalOffers, offers }: MainProps): JSX.Element {
                 </li>
               </ul>
             </form>
-            <ListOffers offers={offers} />
+            <ListOffers offers={offers} onListItemHover={onListItemHover} />
           </section>
           <div className="cities__right-section">
-            <section className="cities__map map"></section>
+            <section className="cities__map map">
+              <Map
+                city={city}
+                points={offers.map((offer) => offer.location)}
+                selectedPoint={selectedPoint}
+              />
+            </section>
           </div>
         </div>
       </div>

@@ -40,6 +40,7 @@ export type TypeOffer = {
     latitude: number;
     longitude: number;
     zoom: number;
+    title: string;
   };
   reviews: Review[];
 };
