@@ -46,7 +46,8 @@ export const offers: TypeOffer[] = [
     location: {
       latitude: 52.3909553943508,
       longitude: 4.85309666406198,
-      zoom: 12
+      zoom: 12,
+      title: 'Beautiful & luxurious apartment at great location'
     },
     reviews: [
       {
@@ -93,17 +94,18 @@ export const offers: TypeOffer[] = [
       isPro: true
     },
     city: {
-      name: 'Paris',
+      name: 'Amsterdam',
       location: {
-        latitude: 48.85661,
-        longitude: 2.351499,
+        latitude: 52.37454,
+        longitude: 4.897976,
         zoom: 12
       }
     },
     location: {
-      latitude: 48.86261,
-      longitude: 2.352499,
-      zoom: 12
+      latitude: 52.3609553943508,
+      longitude: 4.85309666406198,
+      zoom: 12,
+      title: 'Wood and stone place'
     },
     reviews: [
       {
@@ -162,17 +164,18 @@ export const offers: TypeOffer[] = [
       isPro: false
     },
     city: {
-      name: 'Cologne',
+      name: 'Amsterdam',
       location: {
-        latitude: 50.93753,
-        longitude: 6.96028,
+        latitude: 52.37454,
+        longitude: 4.897976,
         zoom: 12
       }
     },
     location: {
-      latitude: 50.94753,
-      longitude: 6.97028,
-      zoom: 12
+      latitude: 52.3909553943508,
+      longitude: 4.929309666406198,
+      zoom: 12,
+      title: 'Canal View Prinsengracht'
     },
     reviews: [
       {
@@ -245,17 +248,18 @@ export const offers: TypeOffer[] = [
       isPro: true
     },
     city: {
-      name: 'Brussels',
+      name: 'Amsterdam',
       location: {
-        latitude: 50.85045,
-        longitude: 4.34878,
+        latitude: 52.37454,
+        longitude: 4.897976,
         zoom: 12
       }
     },
     location: {
-      latitude: 50.86045,
-      longitude: 4.35878,
-      zoom: 12
+      latitude: 52.3809553943508,
+      longitude: 4.939309666406198,
+      zoom: 12,
+      title: 'Nice, cozy, warm big bed apartment'
     },
     reviews: [
       {

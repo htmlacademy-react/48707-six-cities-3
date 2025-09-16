@@ -5,7 +5,7 @@ type FavoritesProps = {
   offers: TypeOffer[];
 };
 
-export const groupOffersByCity = (offers: TypeOffer[]): Record<string, TypeOffer[]> =>
+const groupOffersByCity = (offers: TypeOffer[]): Record<string, TypeOffer[]> =>
   offers.reduce((acc: Record<string, TypeOffer[]>, offer: TypeOffer) => {
     const cityName = offer.city.name;
 

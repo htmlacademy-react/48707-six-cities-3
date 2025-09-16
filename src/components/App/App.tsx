@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { AppRoute, AuthorizationStatus } from '../../const.tsx';
+import { useState } from 'react';
+import { AppRoute, AuthorizationStatus } from '../../const';
 import PrivateRoute from '../PrivateRoute/PrivateRoute.tsx';
 import Main from '../../pages/HomePage/HomePage.tsx';
 import Login from '../../pages/Login/Login.tsx';
@@ -14,17 +15,42 @@ type AppScreenProps = {
 };
 
 function App({ numberOfRentalOffers, offers }: AppScreenProps): JSX.Element {
+  const [selectedPoint, setSelectedPoint] = useState<
+    TypeOffer['location'] | undefined
+  >(undefined);
+
+  const city =
+    offers.length > 0 ? offers[0].city :
+      {
+        name: 'Amsterdam',
+        location: {
+          latitude: 52.37454,
+          longitude: 4.897976,
+          zoom: 12,
+        },
+      };
+
+  const handleListItemHover = (listItemName: string) => {
+    const currentPoint = offers.find((offer) => offer.title === listItemName)?.location;
+    setSelectedPoint(currentPoint);
+  };
+
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path={AppRoute.Root}
-          element={<Main numberOfRentalOffers={numberOfRentalOffers} offers = {offers}/>}
+          element={
+            <Main
+              numberOfRentalOffers={numberOfRentalOffers}
+              offers={offers}
+              city={city}
+              selectedPoint={selectedPoint}
+              onListItemHover={handleListItemHover}
+            />
+          }
         />
-        <Route
-          path={AppRoute.Offer}
-          element={<Offer offers={offers}/>}
-        />
+        <Route path={AppRoute.Offer} element={<Offer offers={offers} />} />
 
         <Route path={AppRoute.Login} element={<Login />} />
         <Route

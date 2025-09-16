@@ -4,9 +4,10 @@ import { useState } from 'react';
 
 type ListOffersProps = {
   offers: TypeOffer[];
+  onListItemHover: (listItemName: string) => void;
 };
 
-function ListOffers({ offers }: ListOffersProps): JSX.Element {
+function ListOffers({ offers, onListItemHover }: ListOffersProps): JSX.Element {
   const [activeOffer, setactiveOffer] = useState<TypeOffer | null>(null);
   return (
     <div className="cities__places-list places__list tabs__content">
@@ -18,6 +19,8 @@ function ListOffers({ offers }: ListOffersProps): JSX.Element {
             onMouseOver={(): void => {
               setactiveOffer(offer);
             }}
+            onMouseEnter={() => onListItemHover(offer.title)}
+            onMouseLeave={() => onListItemHover('')}
             active={activeOffer?.id === offer.id}
           />
         ))
