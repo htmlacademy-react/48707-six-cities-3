@@ -1,59 +1,29 @@
-import { TypeOffer } from '../../types/offer';
+import { TypeOffer, TypeCity } from '../../types/offer';
 import ListOffers from '../ListOffers/ListOffers';
 import Map from '../../components/Map/Map';
+import ListCity from '../City/ListCity';
 
 type MainProps = {
-  numberOfRentalOffers: number;
   offers: TypeOffer[];
-  city: TypeOffer['city'];
-  selectedPoint: TypeOffer['location'] | undefined;
+  city: TypeCity;
+  selectedPoint?: TypeOffer['location'];
   onListItemHover: (listItemName: string) => void;
+  cities: TypeCity[];
 };
 
 function HomePage({
-  numberOfRentalOffers,
   offers,
   city,
   selectedPoint,
   onListItemHover,
+  cities,
 }: MainProps): JSX.Element {
   return (
     <main className="page__main page__main--index">
       <h1 className="visually-hidden">Cities</h1>
       <div className="tabs">
         <section className="locations container">
-          <ul className="locations__list tabs__list">
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Paris</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Cologne</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Brussels</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item tabs__item--active">
-                <span>Amsterdam</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Hamburg</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Dusseldorf</span>
-              </a>
-            </li>
-          </ul>
+          <ListCity cities={cities} />
         </section>
       </div>
       <div className="cities">
@@ -61,7 +31,7 @@ function HomePage({
           <section className="cities__places places">
             <h2 className="visually-hidden">Places</h2>
             <b className="places__found">
-              {numberOfRentalOffers} places to stay in {city.name}
+              {offers.length} places to stay in {city.name}
             </b>
             <form className="places__sorting" action="#" method="get">
               <span className="places__sorting-caption">Sort by</span>
@@ -94,6 +64,7 @@ function HomePage({
           <div className="cities__right-section">
             <section className="cities__map map">
               <Map
+                key={city.id}
                 city={city}
                 points={offers.map((offer) => offer.location)}
                 selectedPoint={selectedPoint}

@@ -28,14 +28,7 @@ export type TypeOffer = {
     avatarUrl: string;
     isPro: boolean;
   };
-  city: {
-    name: string;
-    location: {
-      latitude: number;
-      longitude: number;
-      zoom: number;
-    };
-  };
+  city: string; // Упрощено до строки с названием города
   location: {
     latitude: number;
     longitude: number;
@@ -43,4 +36,14 @@ export type TypeOffer = {
     title: string;
   };
   reviews: Review[];
+};
+
+export type TypeCity = {
+  id: string;
+  name: string;
+  location: {
+    latitude: number;
+    longitude: number;
+    zoom: number;
+  };
 };
