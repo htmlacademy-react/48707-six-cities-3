@@ -13,7 +13,7 @@ function ListCity({ cities }: CitiesProps): JSX.Element {
     <ul className="locations__list tabs__list">
       {cities.map((city) => (
         <City
-          key={city.id}
+          key={city.name}
           city={city}
           onClick={(selectedCity) => dispatch(changeCity(selectedCity.name))}
         />

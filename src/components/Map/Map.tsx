@@ -31,18 +31,20 @@ function Map(props: MapProps): JSX.Element {
   useEffect(() => {
     if (map) {
       const markerLayer = layerGroup().addTo(map);
+
       points.forEach((point) => {
         const marker = new Marker({
           lat: point.latitude,
           lng: point.longitude,
         });
 
+        const isSelected =
+          selectedPoint !== undefined &&
+          point.latitude === selectedPoint.latitude &&
+          point.longitude === selectedPoint.longitude;
+
         marker
-          .setIcon(
-            selectedPoint !== undefined && point.title === selectedPoint.title
-              ? currentCustomIcon
-              : defaultCustomIcon
-          )
+          .setIcon(isSelected ? currentCustomIcon : defaultCustomIcon)
           .addTo(markerLayer);
       });
 
