@@ -1,24 +1,42 @@
 import { useParams, Navigate } from 'react-router-dom';
-import { useState } from 'react';
-import { TypeOffer } from '../../types/offer';
+import { useState, useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { fetchOfferById, fetchReviewsById } from '../../store/api-actions';
+import LoadingScreen from '../../pages/Spinner/Spinner.tsx';
 import ReviewForm from './ReviewsForm';
-
-type OfferProps = {
-  offers: TypeOffer[];
-};
 
 const getMonthName = (dateString: string): string =>
   new Date(dateString).toLocaleString('en-US', { month: 'long' });
 
-function Offer({ offers }: OfferProps): JSX.Element {
+function Offer(): JSX.Element {
   const [review, setReview] = useState({
     rating: 0,
     comment: '',
   });
   const { id } = useParams<{ id: string }>();
-  const offer = offers.find((o) => o.id === id);
+  const dispatch = useAppDispatch();
+  const offer = useAppSelector((state) => state.offer);
+  const isOfferDataLoading = useAppSelector(
+    (state) => state.isOfferDataLoading
+  );
+  const reviews = useAppSelector((state) => state.reviews);
+  const isReviewsDataLoading = useAppSelector(
+    (state) => state.isReviewsDataLoading
+  );
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchOfferById(id));
+      dispatch(fetchReviewsById(id));
+    }
+  }, [id, dispatch]);
+
+  if (isOfferDataLoading && isReviewsDataLoading) {
+    return <LoadingScreen />;
+  }
+
   if (!offer) {
-    return <Navigate to="*" replace />;
+    return <Navigate to="/not-found" replace />;
   }
 
   return (
@@ -27,18 +45,14 @@ function Offer({ offers }: OfferProps): JSX.Element {
         <div className="offer__gallery-container container">
           <div className="offer__gallery">
             <div className="offer__image-wrapper">
-              {
-                offer.images.map((img) =>
-                  (
-                    <img
-                      key={img}
-                      className="offer__image"
-                      src={img}
-                      alt="Photo studio"
-                    />
-                  )
-                )
-              }
+              {offer.images.map((img) => (
+                <img
+                  key={img}
+                  className="offer__image"
+                  src={img}
+                  alt="Photo studio"
+                />
+              ))}
             </div>
           </div>
         </div>
@@ -87,13 +101,11 @@ function Offer({ offers }: OfferProps): JSX.Element {
             <div className="offer__inside">
               <h2 className="offer__inside-title">What&apos;s inside</h2>
               <ul className="offer__inside-list">
-                {
-                  offer.goods.map((good) => (
-                    <li className="offer__inside-item" key={good}>
-                      {good}
-                    </li>
-                  ))
-                }
+                {offer.goods.map((good) => (
+                  <li className="offer__inside-item" key={good}>
+                    {good}
+                  </li>
+                ))}
               </ul>
             </div>
             <div className="offer__host">
@@ -127,47 +139,42 @@ function Offer({ offers }: OfferProps): JSX.Element {
             <section className="offer__reviews reviews">
               <h2 className="reviews__title">
                 Reviews &middot;{' '}
-                <span className="reviews__amount">{offer?.reviews.length}</span>
+                <span className="reviews__amount">{reviews.length}</span>
               </h2>
               <ul className="reviews__list">
-                {
-                  offer.reviews.map((item) => (
-                    <li className="reviews__item" key={item.id}>
-                      <div className="reviews__user user">
-                        <div className="reviews__avatar-wrapper user__avatar-wrapper">
-                          <img
-                            className="reviews__avatar user__avatar"
-                            src={item.user.avatarUrl}
-                            width="54"
-                            height="54"
-                            alt="Reviews avatar"
-                          />
-                        </div>
-                        <span className="reviews__user-name">
-                          {item.user.name}
-                        </span>
+                {reviews.map((item) => (
+                  <li className="reviews__item" key={item.id}>
+                    <div className="reviews__user user">
+                      <div className="reviews__avatar-wrapper user__avatar-wrapper">
+                        <img
+                          className="reviews__avatar user__avatar"
+                          src={item.user.avatarUrl}
+                          width="54"
+                          height="54"
+                          alt="Reviews avatar"
+                        />
                       </div>
-                      <div className="reviews__info">
-                        <div className="reviews__rating rating">
-                          <div className="reviews__stars rating__stars">
-                            <span style={{ width: `${(item.rating * 100 / 5)} %` }}></span>
-                            <span className="visually-hidden">Rating</span>
-                          </div>
+                      <span className="reviews__user-name">
+                        {item.user.name}
+                      </span>
+                    </div>
+                    <div className="reviews__info">
+                      <div className="reviews__rating rating">
+                        <div className="reviews__stars rating__stars">
+                          <span style={{ width: `${(item.rating * 100) / 5} %` }}></span>
+                          <span className="visually-hidden">Rating</span>
                         </div>
-                        <p className="reviews__text">{item.comment}</p>
-                        <time className="reviews__time" dateTime={item.date}>
-                          {getMonthName(item.date)}{' '}
-                          {new Date(item.date).getFullYear()}
-                        </time>
                       </div>
-                    </li>
-                  ))
-                }
+                      <p className="reviews__text">{item.comment}</p>
+                      <time className="reviews__time" dateTime={item.date}>
+                        {getMonthName(item.date)}{' '}
+                        {new Date(item.date).getFullYear()}
+                      </time>
+                    </div>
+                  </li>
+                ))}
               </ul>
-              <ReviewForm
-                onReview={setReview}
-                review={review}
-              />
+              <ReviewForm onReview={setReview} review={review} />
             </section>
           </div>
         </div>

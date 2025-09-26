@@ -18,24 +18,14 @@ export type TypeOffer = {
   rating: number;
   isPremium: boolean;
   isFavorite: boolean;
-  images: string[];
-  description: string;
-  bedrooms: number;
-  maxAdults: number;
-  goods: string[];
-  host: {
-    name: string;
-    avatarUrl: string;
-    isPro: boolean;
-  };
-  city: string; // Упрощено до строки с названием города
+  previewImage: string;
+  city: TypeCity;
   location: {
     latitude: number;
     longitude: number;
     zoom: number;
     title: string;
   };
-  reviews: Review[];
 };
 
 export type TypeCity = {
@@ -47,3 +37,17 @@ export type TypeCity = {
     zoom: number;
   };
 };
+
+export type TypeFullOffer = TypeOffer & {
+  description: string;
+  bedrooms: number;
+  maxAdults: number;
+  goods: string[];
+  host: {
+    name: string;
+    avatarUrl: string;
+    isPro: boolean;
+  };
+  reviews: Review[];
+  images: string[];
+}

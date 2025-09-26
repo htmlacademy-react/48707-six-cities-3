@@ -3,16 +3,13 @@ import { Link } from 'react-router-dom';
 
 type PlaceProps = {
   offer: TypeOffer;
-  onMouseOver: () => void;
-  active: boolean;
-  onMouseEnter: () => void;
+  onMouseOver: (id:string) => void;
   onMouseLeave: () => void;
 };
 
-function Place({offer, onMouseOver, active, onMouseEnter, onMouseLeave }: PlaceProps): JSX.Element {
-  const activeStyle = active ? '1px solid #ececec' : '';
+function Place({offer, onMouseOver, onMouseLeave }: PlaceProps): JSX.Element {
   return (
-    <article className="cities__card place-card" onMouseOver={onMouseOver} style={{ border: activeStyle }} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+    <article className="cities__card place-card" onMouseOver={() => onMouseOver(offer.id)} onMouseLeave={onMouseLeave}>
       {
         offer.isPremium ?
           <div className="place-card__mark">
@@ -24,7 +21,7 @@ function Place({offer, onMouseOver, active, onMouseEnter, onMouseLeave }: PlaceP
         <a href="#">
           <img
             className="place-card__image"
-            src={offer.images[0]}
+            src={offer.previewImage}
             width="260"
             height="200"
             alt="Place image"

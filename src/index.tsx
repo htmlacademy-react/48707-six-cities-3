@@ -1,9 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './components/App/App.tsx';
-import { cities } from './mocks/cities.ts';
 import { Provider } from 'react-redux';
 import { store } from './store/index.ts';
+import ErrorMessage from './components/Error/error-message';
+import {fetchOfferAction} from './store/api-actions';
+
+store.dispatch(fetchOfferAction());
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -12,7 +15,8 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App cities={cities} />
+      <ErrorMessage />
+      <App/>
     </Provider>
   </React.StrictMode>
 );

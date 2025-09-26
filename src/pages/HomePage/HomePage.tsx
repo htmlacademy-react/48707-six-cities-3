@@ -9,6 +9,7 @@ type MainProps = {
   selectedPoint?: TypeOffer['location'];
   onListItemHover: (listItemName: string) => void;
   cities: TypeCity[];
+  onListItemLeave: () => void;
 };
 
 function HomePage({
@@ -16,6 +17,7 @@ function HomePage({
   city,
   selectedPoint,
   onListItemHover,
+  onListItemLeave,
   cities,
 }: MainProps): JSX.Element {
   return (
@@ -59,7 +61,7 @@ function HomePage({
                 </li>
               </ul>
             </form>
-            <ListOffers offers={offers} onListItemHover={onListItemHover} />
+            <ListOffers offers={offers} onListItemHover={(id) => onListItemHover(id)} onListItemLeave={onListItemLeave}/>
           </section>
           <div className="cities__right-section">
             <section className="cities__map map">

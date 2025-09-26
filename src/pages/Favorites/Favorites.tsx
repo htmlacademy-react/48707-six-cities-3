@@ -7,7 +7,7 @@ type FavoritesProps = {
 
 const groupOffersByCity = (offers: TypeOffer[]): Record<string, TypeOffer[]> =>
   offers.reduce((acc: Record<string, TypeOffer[]>, offer: TypeOffer) => {
-    const cityName = offer.city;
+    const cityName = offer.city.name;
 
     if (!acc[cityName]) {
       acc[cityName] = [];
