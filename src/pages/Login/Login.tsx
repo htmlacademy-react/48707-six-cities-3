@@ -1,11 +1,33 @@
+import {useRef, FormEvent} from 'react';
+import {Link} from 'react-router-dom';
+import {useAppDispatch} from '../../hooks';
+import {loginAction} from '../../store/api-actions';
+import {AppRoute} from '../../const';
+
 function Login(): JSX.Element {
+  const emailRef = useRef<HTMLInputElement | null>(null);
+  const passwordRef = useRef<HTMLInputElement | null>(null);
+
+  const dispatch = useAppDispatch();
+
+  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+
+    if (emailRef.current !== null && passwordRef.current !== null) {
+      dispatch(loginAction({
+        login: emailRef.current.value,
+        password: passwordRef.current.value
+      }));
+    }
+  };
+
   return (
     <div className="page page--gray page--login">
       <header className="header">
         <div className="container">
           <div className="header__wrapper">
             <div className="header__left">
-              <a className="header__logo-link" href="main.html">
+              <Link className="header__logo-link" to={AppRoute.Root}>
                 <img
                   className="header__logo"
                   src="img/logo.svg"
@@ -13,7 +35,7 @@ function Login(): JSX.Element {
                   width="81"
                   height="41"
                 />
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -23,7 +45,7 @@ function Login(): JSX.Element {
         <div className="page__login-container container">
           <section className="login">
             <h1 className="login__title">Sign in</h1>
-            <form className="login__form form" action="#" method="post">
+            <form className="login__form form" action="#" method="post" onSubmit={handleSubmit}>
               <div className="login__input-wrapper form__input-wrapper">
                 <label className="visually-hidden">E-mail</label>
                 <input
@@ -32,6 +54,7 @@ function Login(): JSX.Element {
                   name="email"
                   placeholder="Email"
                   required
+                  ref={emailRef}
                 />
               </div>
               <div className="login__input-wrapper form__input-wrapper">
@@ -42,6 +65,7 @@ function Login(): JSX.Element {
                   name="password"
                   placeholder="Password"
                   required
+                  ref={passwordRef}
                 />
               </div>
               <button
@@ -54,9 +78,9 @@ function Login(): JSX.Element {
           </section>
           <section className="locations locations--login locations--current">
             <div className="locations__item">
-              <a className="locations__item-link" href="#">
+              <Link className="locations__item-link" to={AppRoute.Root}>
                 <span>Amsterdam</span>
-              </a>
+              </Link>
             </div>
           </section>
         </div>

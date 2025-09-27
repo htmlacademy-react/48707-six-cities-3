@@ -2,19 +2,22 @@ import {AxiosInstance} from 'axios';
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {AppDispatch, State} from '../types/state.js';
 import { TypeOffer, TypeFullOffer, Review} from '../types/offer.js';
-import {loadOffers, setError, setOffersDataLoadingStatus, setOfferDataLoadingStatus, loadOffer, setReviewsDataLoadingStatus, loadReviews } from './action';
-import {APIRoute, TIMEOUT_SHOW_ERROR} from '../const';
-import {store} from './';
+import {loadOffers, setOffersDataLoadingStatus, setOfferDataLoadingStatus, loadOffer, setReviewsDataLoadingStatus, loadReviews, requireAuthorization, redirectToRoute, getUserData } from './action';
+import {APIRoute, AuthorizationStatus, AppRoute } from '../const';
+import {AuthData} from '../types/auth-data';
+import {UserData} from '../types/user-data';
+import {saveToken, dropToken} from '../services/token';
+import { toast } from 'react-toastify';
 
-export const clearErrorAction = createAsyncThunk(
-  'game/clearError',
-  () => {
-    setTimeout(
-      () => store.dispatch(setError(null)),
-      TIMEOUT_SHOW_ERROR,
-    );
-  },
-);
+type AxiosError = {
+  response?: {
+    status: number;
+    data?: {
+      message?: string;
+    };
+  };
+  message?: string;
+};
 
 export const fetchOfferAction = createAsyncThunk<void, undefined, {
   dispatch: AppDispatch;
@@ -41,8 +44,6 @@ export const fetchOfferById = createAsyncThunk<void, string, {
     try {
       const {data} = await api.get<TypeFullOffer>(`${APIRoute.Offers}/${offerId}`);
       dispatch(loadOffer(data));
-    } catch (error) {
-      dispatch(setError('Failed to load offer'));
     } finally {
       dispatch(setOfferDataLoadingStatus(false));
     }
@@ -60,10 +61,74 @@ export const fetchReviewsById = createAsyncThunk<void, string, {
     try {
       const {data} = await api.get<Review[]>(`/comments/${offerId}`);
       dispatch(loadReviews(data));
-    } catch (error) {
-      dispatch(setError('Failed to load reviews'));
     } finally {
       dispatch(setReviewsDataLoadingStatus(false));
     }
+  },
+);
+
+export const checkAuthAction = createAsyncThunk<void, undefined, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'user/checkAuth',
+  async (_arg, {dispatch, extra: api}) => {
+    try {
+      await api.get(APIRoute.Login);
+      const {data} = await api.get<UserData>(APIRoute.Login);
+      dispatch(requireAuthorization(AuthorizationStatus.Auth));
+      dispatch(getUserData(data));
+    } catch(error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response?.status === 401) {
+        dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
+        dispatch(getUserData(null));
+      } else {
+        dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
+        dispatch(getUserData(null));
+      }
+    }
+  },
+);
+
+export const loginAction = createAsyncThunk<void, AuthData, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'user/login',
+  async ({login: email, password}, {dispatch, extra: api}) => {
+    try {
+      const {data} = await api.post<UserData>(APIRoute.Login, {email, password});
+      saveToken(data.token);
+      dispatch(requireAuthorization(AuthorizationStatus.Auth));
+      dispatch(getUserData(data));
+      dispatch(redirectToRoute(AppRoute.Root));
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response?.status === 401) {
+        toast.error('Неверный email или пароль');
+      } else if (axiosError.response?.status === 400) {
+        toast.error('Некорректные данные для входа');
+      } else {
+        toast.error('Ошибка соединения. Попробуйте позже.');
+      }
+      throw error;
+    }
+  },
+);
+
+export const logoutAction = createAsyncThunk<void, undefined, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'user/logout',
+  async (_arg, {dispatch, extra: api}) => {
+    await api.delete(APIRoute.Logout);
+    dropToken();
+    dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
+    dispatch(getUserData(null));
   },
 );
