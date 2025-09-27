@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import {Route, Routes} from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { AppRoute, AuthorizationStatus } from '../../const';
 import PrivateRoute from '../PrivateRoute/PrivateRoute.tsx';
@@ -9,14 +9,24 @@ import Favorites from '../../pages/Favorites/Favorites.tsx';
 import Offer from '../../pages/Offer/Offer.tsx';
 import NotFound from '../../pages/NotFound/NotFound.tsx';
 import { TypeOffer } from '../../types/offer.ts';
-import { useAppDispatch, useAppSelector } from '../../hooks/index.ts';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { getOffersByCity, getCitiesFromOffers, changeCity } from '../../store/action';
 import LoadingScreen from '../../pages/Spinner/Spinner.tsx';
+import HistoryRouter from '../HistoryRoute/HistoryRoute.tsx';
+import browserHistory from '../../browser-history';
+import Header from '../../pages/Header/Header.tsx';
+import { checkAuthAction } from '../../store/api-actions';
 
 function App(): JSX.Element {
   const [selectedPoint, setSelectedPoint] = useState<TypeOffer['location']>();
-  const dispatch = useAppDispatch();
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
   const isOffersDataLoading = useAppSelector((state) => state.isOffersDataLoading);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(checkAuthAction());
+  }, [dispatch]);
+
   const city = useAppSelector((state) => state.city);
   const cities = useAppSelector((state) => state.cities);
   const offers = useAppSelector((state) => state.offers);
@@ -37,6 +47,10 @@ function App(): JSX.Element {
       dispatch(changeCity(cities[0].name));
     }
   }, [cities, city, dispatch]);
+
+  if (authorizationStatus === AuthorizationStatus.Unknown || isOffersDataLoading) {
+    return <LoadingScreen />;
+  }
 
   if (isOffersDataLoading) {
     return <LoadingScreen />;
@@ -76,7 +90,8 @@ function App(): JSX.Element {
   };
 
   return (
-    <BrowserRouter>
+    <HistoryRouter history={browserHistory}>
+      <Header />
       <Routes>
         <Route path={AppRoute.Root} element={getComponentHomePage(offers)} />
         <Route path={AppRoute.Offer} element={<Offer />} />
@@ -85,14 +100,14 @@ function App(): JSX.Element {
         <Route
           path={AppRoute.Favorites}
           element={
-            <PrivateRoute authorizationStatus={AuthorizationStatus.NoAuth}>
+            <PrivateRoute authorizationStatus={authorizationStatus}>
               <Favorites offers={offers} />
             </PrivateRoute>
           }
         />
         <Route path={AppRoute.NotFound} element={<NotFound />} />
       </Routes>
-    </BrowserRouter>
+    </HistoryRouter>
   );
 }
 

@@ -1,7 +1,6 @@
-export const TIMEOUT_SHOW_ERROR = 2000;
-
 export enum AppRoute {
   Login = '/login',
+  Logout = '/logout',
   Favorites = '/favorites',
   Offer = '/offer/:id',
   Root = '/',

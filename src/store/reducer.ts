@@ -1,19 +1,21 @@
 import {createReducer} from '@reduxjs/toolkit';
-import {changeCity, getOffersByCity, loadOffers, setError, setOffersDataLoadingStatus, getCitiesFromOffers, loadOffer, setOfferDataLoadingStatus, loadReviews, setReviewsDataLoadingStatus } from './action';
+import {changeCity, getOffersByCity, loadOffers, setOffersDataLoadingStatus, getCitiesFromOffers, loadOffer, setOfferDataLoadingStatus, loadReviews, setReviewsDataLoadingStatus,requireAuthorization, getUserData } from './action';
 import { TypeOffer, TypeCity } from '../types/offer.ts';
 import { State } from '../types/state';
+import { AuthorizationStatus } from '../const.tsx';
 
 const initialState: State = {
   city: 'Paris',
   offers: [],
   allOffers: [],
   cities: [],
-  error: null,
   isOffersDataLoading: false,
   offer: null,
   isOfferDataLoading: true,
   reviews: [],
   isReviewsDataLoading: true,
+  authorizationStatus: AuthorizationStatus.Unknown,
+  userData: null,
 };
 
 const reducer = createReducer(initialState, (builder) => {
@@ -55,9 +57,6 @@ const reducer = createReducer(initialState, (builder) => {
         state.cities = [];
       }
     })
-    .addCase(setError, (state, action) => {
-      state.error = action.payload;
-    })
     .addCase(loadOffer, (state, action) => {
       state.offer = action.payload;
     })
@@ -69,6 +68,12 @@ const reducer = createReducer(initialState, (builder) => {
     })
     .addCase(setReviewsDataLoadingStatus, (state, action) => {
       state.isReviewsDataLoading = action.payload;
+    })
+    .addCase(requireAuthorization, (state, action) => {
+      state.authorizationStatus = action.payload;
+    })
+    .addCase(getUserData, (state, action) => {
+      state.userData = action.payload;
     });
 });
 
