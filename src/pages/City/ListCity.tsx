@@ -1,7 +1,7 @@
 import City from './City';
 import { TypeCity } from '../../types/offer';
 import { useAppDispatch } from '../../hooks';
-import { changeCity } from '../../store/action';
+import { changeCity } from '../../store/offers-process/offers-process';
 
 type CitiesProps = {
   cities: TypeCity[];
