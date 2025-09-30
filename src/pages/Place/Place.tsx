@@ -1,13 +1,14 @@
+import React from 'react';
 import { TypeOffer } from '../../types/offer';
 import { Link } from 'react-router-dom';
 
 type PlaceProps = {
   offer: TypeOffer;
-  onMouseOver: (id:string) => void;
+  onMouseOver: (id: string) => void;
   onMouseLeave: () => void;
 };
 
-function Place({offer, onMouseOver, onMouseLeave }: PlaceProps): JSX.Element {
+export function PlaceComponent({ offer, onMouseOver, onMouseLeave }: PlaceProps): JSX.Element {
   return (
     <article className="cities__card place-card" onMouseOver={() => onMouseOver(offer.id)} onMouseLeave={onMouseLeave}>
       {
@@ -55,5 +56,8 @@ function Place({offer, onMouseOver, onMouseLeave }: PlaceProps): JSX.Element {
     </article>
   );
 }
+
+const Place = React.memo(PlaceComponent);
+Place.displayName = 'Place';
 
 export default Place;

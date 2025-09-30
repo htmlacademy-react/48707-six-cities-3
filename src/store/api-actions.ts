@@ -2,12 +2,13 @@ import {AxiosInstance} from 'axios';
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {AppDispatch, State} from '../types/state.js';
 import { TypeOffer, TypeFullOffer, Review} from '../types/offer.js';
-import {loadOffers, setOffersDataLoadingStatus, setOfferDataLoadingStatus, loadOffer, setReviewsDataLoadingStatus, loadReviews, requireAuthorization, redirectToRoute, getUserData } from './action';
-import {APIRoute, AuthorizationStatus, AppRoute } from '../const';
+import {redirectToRoute } from './action';
+import {APIRoute, AppRoute } from '../const';
 import {AuthData} from '../types/auth-data';
 import {UserData} from '../types/user-data';
 import {saveToken, dropToken} from '../services/token';
 import { toast } from 'react-toastify';
+import { setAllOffers } from './offers-process/offers-process.js';
 
 type AxiosError = {
   response?: {
@@ -19,80 +20,66 @@ type AxiosError = {
   message?: string;
 };
 
-export const fetchOfferAction = createAsyncThunk<void, undefined, {
+export const fetchOffersAction = createAsyncThunk<TypeOffer[], undefined, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }>(
   'data/fetchOffers',
   async (_arg, {dispatch, extra: api}) => {
-    dispatch(setOffersDataLoadingStatus(true));
     const {data} = await api.get<TypeOffer[]>(APIRoute.Offers);
-    dispatch(setOffersDataLoadingStatus(false));
-    dispatch(loadOffers(data));
+    dispatch(setAllOffers(data));
+    return data;
   },
 );
 
-export const fetchOfferById = createAsyncThunk<void, string, {
+export const fetchOfferById = createAsyncThunk<TypeFullOffer, string, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }>(
   'data/fetchOfferById',
-  async (offerId, {dispatch, extra: api}) => {
-    dispatch(setOfferDataLoadingStatus(true));
-    try {
-      const {data} = await api.get<TypeFullOffer>(`${APIRoute.Offers}/${offerId}`);
-      dispatch(loadOffer(data));
-    } finally {
-      dispatch(setOfferDataLoadingStatus(false));
-    }
+  async (offerId, { extra: api}) => {
+    const {data} = await api.get<TypeFullOffer>(`${APIRoute.Offers}/${offerId}`);
+    return data;
   },
 );
 
-export const fetchReviewsById = createAsyncThunk<void, string, {
+export const fetchReviewsById = createAsyncThunk<Review[], string, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }>(
   'data/fetchReviewsById',
-  async (offerId, {dispatch, extra: api}) => {
-    dispatch(setReviewsDataLoadingStatus(true));
-    try {
-      const {data} = await api.get<Review[]>(`/comments/${offerId}`);
-      dispatch(loadReviews(data));
-    } finally {
-      dispatch(setReviewsDataLoadingStatus(false));
-    }
+  async (offerId, {extra: api}) => {
+    const {data} = await api.get<Review[]>(`/comments/${offerId}`);
+    return data;
   },
 );
 
-export const checkAuthAction = createAsyncThunk<void, undefined, {
+export const checkAuthAction = createAsyncThunk<UserData, undefined, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }>(
   'user/checkAuth',
-  async (_arg, {dispatch, extra: api}) => {
+  async (_arg, {extra: api}) => {
     try {
-      await api.get(APIRoute.Login);
       const {data} = await api.get<UserData>(APIRoute.Login);
-      dispatch(requireAuthorization(AuthorizationStatus.Auth));
-      dispatch(getUserData(data));
+      return data;
     } catch(error) {
       const axiosError = error as AxiosError;
       if (axiosError.response?.status === 401) {
-        dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
-        dispatch(getUserData(null));
+        toast.error('Вы не авторизованы');
       } else {
-        dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
-        dispatch(getUserData(null));
+        toast.error('Ошибка соединения. Попробуйте позже.');
       }
+      throw error;
     }
   },
 );
 
-export const loginAction = createAsyncThunk<void, AuthData, {
+export const loginAction = createAsyncThunk<UserData, AuthData, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
@@ -102,9 +89,8 @@ export const loginAction = createAsyncThunk<void, AuthData, {
     try {
       const {data} = await api.post<UserData>(APIRoute.Login, {email, password});
       saveToken(data.token);
-      dispatch(requireAuthorization(AuthorizationStatus.Auth));
-      dispatch(getUserData(data));
       dispatch(redirectToRoute(AppRoute.Root));
+      return data;
     } catch (error) {
       const axiosError = error as AxiosError;
       if (axiosError.response?.status === 401) {
@@ -125,10 +111,8 @@ export const logoutAction = createAsyncThunk<void, undefined, {
   extra: AxiosInstance;
 }>(
   'user/logout',
-  async (_arg, {dispatch, extra: api}) => {
+  async (_arg, {extra: api}) => {
     await api.delete(APIRoute.Logout);
     dropToken();
-    dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
-    dispatch(getUserData(null));
   },
 );

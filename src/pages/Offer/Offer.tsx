@@ -4,6 +4,8 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchOfferById, fetchReviewsById } from '../../store/api-actions';
 import LoadingScreen from '../../pages/Spinner/Spinner.tsx';
 import ReviewForm from './ReviewsForm';
+import { getOffer, getIsOfferDataLoading } from '../../store/offers-data/offers-selectors';
+import { getReviews, getIsReviewsDataLoading } from '../../store/reviews-process/reviews-selectors';
 
 const getMonthName = (dateString: string): string =>
   new Date(dateString).toLocaleString('en-US', { month: 'long' });
@@ -13,16 +15,13 @@ function Offer(): JSX.Element {
     rating: 0,
     comment: '',
   });
+
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
-  const offer = useAppSelector((state) => state.offer);
-  const isOfferDataLoading = useAppSelector(
-    (state) => state.isOfferDataLoading
-  );
-  const reviews = useAppSelector((state) => state.reviews);
-  const isReviewsDataLoading = useAppSelector(
-    (state) => state.isReviewsDataLoading
-  );
+  const offer = useAppSelector(getOffer);
+  const isOfferDataLoading = useAppSelector(getIsOfferDataLoading);
+  const reviews = useAppSelector(getReviews);
+  const isReviewsDataLoading = useAppSelector(getIsReviewsDataLoading);
 
   useEffect(() => {
     if (id) {

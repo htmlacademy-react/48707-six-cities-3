@@ -1,3 +1,4 @@
+import React from 'react';
 import { useRef, useEffect } from 'react';
 import { Icon, Marker, layerGroup } from 'leaflet';
 import useMap from '../../hooks/use-map';
@@ -23,7 +24,7 @@ const currentCustomIcon = new Icon({
   iconAnchor: [20, 40],
 });
 
-function Map(props: MapProps): JSX.Element {
+export function MapComponent(props: MapProps): JSX.Element {
   const { city, points, selectedPoint } = props;
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
@@ -56,5 +57,8 @@ function Map(props: MapProps): JSX.Element {
 
   return <div style={{ height: '100%' }} ref={mapRef}></div>;
 }
+
+const Map = React.memo(MapComponent);
+Map.displayName = 'Map';
 
 export default Map;
